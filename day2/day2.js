@@ -24,8 +24,6 @@ function positioning(instructions) {
     console.log(res)
 }
 
-
-
 function manualPositioning(instructions) {
     let depth = 0, horiz = 0, aim = 0;
     let instrucArr = instructions.split('\n');
