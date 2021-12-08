@@ -84,13 +84,52 @@ function bingo(numbers, boards) {
     }
 }
 
+function bingoII(numbers, boards) {
+    let i = 0, currNum = -1, winningBoards = {}, lastBoard = [];
+    let nums = numbers.split(',').map(val => parseInt(val));
+    let convertedBoards = convertBoards(boards);
+    let boardsLeft = convertedBoards.length;
+
+    // create a dictionary of values to their coordinates
+    let dict = {}
+    for (let board = 0; board<convertedBoards.length; board++) {
+        for (let row = 0; row<convertedBoards[0].length; row++) {
+            for (let col = 0; col<convertedBoards[0][0].length; col++) {
+                let val = convertedBoards[board][row][col];
+                if (dict[val]) {
+                    dict[val].push([board,row,col])
+                } else {
+                    dict[val] = [[board,row,col]]
+                }
+            }
+        }
+    }
+
+    while (i < nums.length && boardsLeft > 0) {
+        currNum = parseInt(nums[i])
+        if (dict[currNum]) {
+            let numOfCoords = dict[currNum].length;
+            for (let j = 0; j < numOfCoords; j++) {
+                let coordArr = dict[currNum][j]; // coordArr = [1,2,3] 
+
+                // key into the board, set to -1
+                convertedBoards[coordArr[0]][coordArr[1]][coordArr[2]] = -1
+
+                // check if you win
+                if (!winningBoards[coordArr[0]] && didWin(convertedBoards[coordArr[0]],[coordArr[1],coordArr[2]])) {
+                    if (boardsLeft > 1) {
+                        winningBoards[coordArr[0]] = true;                        
+                    } else {
+                        i = nums.length
+                        console.log(calculateScore(convertedBoards[coordArr[0]],currNum))
+                    }
+                    boardsLeft--
+                }
+            }
+        }
+        i++
+    }
+}
 
 bingo(realNumbers,realBoards)
-
-// cycle through array and create dictionary of values to coordinates
-// {17: [#board,#row,#col], [1,4,2]...}
-
-// cycle through numbers, then replace values at coordinates with -1
-
-// after replacing a number, check to see if it wins
-
+bingoII(realNumbers,realBoards)
